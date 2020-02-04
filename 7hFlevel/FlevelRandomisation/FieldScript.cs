@@ -16,6 +16,8 @@ namespace _7hFlevel.FlevelRandomisation
             // Matching the string to the actual item pickup will be difficult; will need to seek out the window ID
             // and what text ID it's looking for. Will be fairly complex especially as they're not uniformly scripted.
 
+            // Test commit
+
             var search = new byte[] { 0x32, 0x45, 0x43, 0x45, 0x49, 0x56, 0x45, 0x44, 0x00, 0x02 };
             var current = new byte[10];
             var maxSearchRange = data.Length - 9;
