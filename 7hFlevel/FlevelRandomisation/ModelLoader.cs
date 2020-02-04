@@ -49,7 +49,7 @@ namespace _7hFlevel.FlevelRandomisation
                     o += modelNameSize;
 
                     // Changes the HRC string
-                    string newHRC = FieldModels.MainCharacterSwap();
+                    string newHRC = FieldModels.RandomSwap();
 
                     // Converts the string into bytes
                     byte[] newHRCBytes = ConvertString.GetNameBytes(newHRC);
@@ -89,7 +89,7 @@ namespace _7hFlevel.FlevelRandomisation
                         o += 2;
 
                         // Changes the HRC string
-                        string newAnim = FieldModels.AnimSwap();
+                        string newAnim = FieldModels.RandomSwap();
 
                         // Converts the string into bytes
                         byte[] newAnimBytes = ConvertString.GetNameBytes(newAnim);

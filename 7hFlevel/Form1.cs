@@ -3,6 +3,7 @@
   The original developer is Iros <irosff@outlook.com>
 */
 using _7hFlevel.FlevelRandomisation;
+using _7hFlevel.Indexing;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -370,6 +371,12 @@ namespace _7hFlevel
                     SectionsList.Remove(9);
                 }
             }
+        }
+
+        private void BtnTest_Click(object sender, EventArgs e)
+        {
+            string test = FieldModels.RandomSwap();
+            MessageBox.Show(test);
         }
     }
 }

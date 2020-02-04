@@ -52,6 +52,7 @@
             this.label6 = new System.Windows.Forms.Label();
             this.btnCompress = new System.Windows.Forms.Button();
             this.sectionAll = new System.Windows.Forms.CheckBox();
+            this.btnTest = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // label3
@@ -303,11 +304,22 @@
             this.sectionAll.UseVisualStyleBackColor = true;
             this.sectionAll.CheckedChanged += new System.EventHandler(this.cb_CheckedChanged);
             // 
+            // btnTest
+            // 
+            this.btnTest.Location = new System.Drawing.Point(17, 196);
+            this.btnTest.Name = "btnTest";
+            this.btnTest.Size = new System.Drawing.Size(75, 23);
+            this.btnTest.TabIndex = 47;
+            this.btnTest.Text = "Test";
+            this.btnTest.UseVisualStyleBackColor = true;
+            this.btnTest.Click += new System.EventHandler(this.BtnTest_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(540, 268);
+            this.Controls.Add(this.btnTest);
             this.Controls.Add(this.sectionAll);
             this.Controls.Add(this.btnCompress);
             this.Controls.Add(this.section9);
@@ -365,6 +377,7 @@
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.Button btnCompress;
         private System.Windows.Forms.CheckBox sectionAll;
+        private System.Windows.Forms.Button btnTest;
     }
 }
 
