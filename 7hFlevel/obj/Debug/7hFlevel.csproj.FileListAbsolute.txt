@@ -1,0 +1,10 @@
+D:\Practice\7hFlevel\7hFlevel\bin\Debug\7hFlevel.exe.config
+D:\Practice\7hFlevel\7hFlevel\bin\Debug\7hFlevel.exe
+D:\Practice\7hFlevel\7hFlevel\bin\Debug\7hFlevel.pdb
+D:\Practice\7hFlevel\7hFlevel\obj\Debug\7hFlevel.csprojAssemblyReference.cache
+D:\Practice\7hFlevel\7hFlevel\obj\Debug\_7hFlevel.Form1.resources
+D:\Practice\7hFlevel\7hFlevel\obj\Debug\_7hFlevel.Properties.Resources.resources
+D:\Practice\7hFlevel\7hFlevel\obj\Debug\7hFlevel.csproj.GenerateResource.cache
+D:\Practice\7hFlevel\7hFlevel\obj\Debug\7hFlevel.csproj.CoreCompileInputs.cache
+D:\Practice\7hFlevel\7hFlevel\obj\Debug\7hFlevel.exe
+D:\Practice\7hFlevel\7hFlevel\obj\Debug\7hFlevel.pdb
