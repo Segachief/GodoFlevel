@@ -46,6 +46,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="FieldDictionaries\TypeOSkeleton.cs" />
+    <Compile Include="FieldDictionaries\UniqueSkeleton.cs" />
+    <Compile Include="FieldDictionaries\TypeIISkeleton.cs" />
+    <Compile Include="FieldDictionaries\TypeISkeleton.cs" />
     <Compile Include="FlevelRandomisation\FieldScript.cs" />
     <Compile Include="FlevelRandomisation\ModelLoader.cs" />
     <Compile Include="Helper\ConvertString.cs" />
