@@ -375,8 +375,8 @@ namespace _7hFlevel
 
         private void BtnTest_Click(object sender, EventArgs e)
         {
-            string test = FieldModels.RandomSwap();
-            MessageBox.Show(test);
+            //string test = FieldModels.RandomSwap();
+            //MessageBox.Show(test);
         }
     }
 }

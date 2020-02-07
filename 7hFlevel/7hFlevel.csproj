@@ -46,7 +46,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="FieldDictionaries\TypeOSkeleton.cs" />
+    <Compile Include="FieldDictionaries\TypeIIISkeleton.cs" />
     <Compile Include="FieldDictionaries\UniqueSkeleton.cs" />
     <Compile Include="FieldDictionaries\TypeIISkeleton.cs" />
     <Compile Include="FieldDictionaries\TypeISkeleton.cs" />

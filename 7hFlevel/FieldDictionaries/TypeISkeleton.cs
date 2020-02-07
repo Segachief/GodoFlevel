@@ -526,7 +526,17 @@ namespace _7hFlevel.FieldDictionaries
                 new KeyValuePair<string,string>("AFIE","HVJB"),
                 new KeyValuePair<string,string>("AFIE","HVJC"),
                 // Highwind Technician
-                new KeyValuePair<string,string>("AAAA","ALAC"),
+                new KeyValuePair<string,string>("AJIF","ACFE"),
+                new KeyValuePair<string,string>("AJIF","AAFF"),
+                new KeyValuePair<string,string>("AJIF","AAGA"),
+                new KeyValuePair<string,string>("AJIF","AKED"),
+                new KeyValuePair<string,string>("AJIF","ALAC"),
+                new KeyValuePair<string,string>("AJIF","APJC"),
+                new KeyValuePair<string,string>("AJIF","APJD"),
+                new KeyValuePair<string,string>("AJIF","AJDC"),
+                new KeyValuePair<string,string>("AJIF","AQBF"),
+                new KeyValuePair<string,string>("AJIF","APEB"),
+                new KeyValuePair<string,string>("AJIF","AJEC"),
                 // Rufus
                 new KeyValuePair<string,string>("AAAA","BOCB"),
                 new KeyValuePair<string,string>("AAAA","ALGC"),
