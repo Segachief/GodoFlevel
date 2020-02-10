@@ -37,7 +37,7 @@ namespace _7hFlevel.FlevelRandomisation
                 {
                     // Call a method to select a new item here and write its string in using Index position
 
-                    // Test
+                    // Test - Success (Replaced Received with RRRRRR)
                     data[o] = 0x32; o++;
                     data[o] = 0x32; o++;
                     data[o] = 0x32; o++;

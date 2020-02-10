@@ -46,10 +46,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="FieldDictionaries\TypeIIISkeleton.cs" />
+    <Compile Include="FieldDictionaries\AllSkeletons.cs" />
+    <Compile Include="FieldDictionaries\ObjectSkeleton.cs" />
+    <Compile Include="FieldDictionaries\AllAnims.cs" />
     <Compile Include="FieldDictionaries\UniqueSkeleton.cs" />
     <Compile Include="FieldDictionaries\TypeIISkeleton.cs" />
     <Compile Include="FieldDictionaries\TypeISkeleton.cs" />
+    <Compile Include="FieldDictionaries\ObjectSkeletonAnims.cs" />
+    <Compile Include="FieldDictionaries\UniqueSkeletonAnims.cs" />
+    <Compile Include="FieldDictionaries\TypeIISkeletonAnims.cs" />
+    <Compile Include="FieldDictionaries\TypeISkeletonAnims.cs" />
     <Compile Include="FlevelRandomisation\FieldScript.cs" />
     <Compile Include="FlevelRandomisation\ModelLoader.cs" />
     <Compile Include="Helper\ConvertString.cs" />
