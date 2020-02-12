@@ -115,7 +115,7 @@ namespace _7hFlevel
                         chunks[0] = FieldScript.ChangeItems(chunks[0]);
 
                         // Sends Model Loader chunk of field to be randomised
-                        chunks[2] = ModelLoader.SwapFieldModels(chunks[2]);
+                        //chunks[2] = ModelLoader.SwapFieldModels(chunks[2]);
 
                         // Recompresses the chunks into a field
                         var field = FieldFile.Chunk(chunks, item.Name);

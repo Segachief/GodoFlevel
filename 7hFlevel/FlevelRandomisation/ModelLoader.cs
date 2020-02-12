@@ -116,7 +116,7 @@ namespace _7hFlevel.FlevelRandomisation
                         currentAnimBytes[3] = data[o + 3];
 
                         // ASCII conversion - string from .HRC bytes - Output: "AAAA"
-                        string currentAnim = @"" + Encoding.ASCII.GetString(currentHRCBytes, 0, currentHRCBytes.Length) + @"";
+                        string currentAnim = @"" + Encoding.ASCII.GetString(currentAnimBytes, 0, currentAnimBytes.Length) + @"";
 
                         // If no options on, the current Anim will be used
                         string newAnim = currentAnim;

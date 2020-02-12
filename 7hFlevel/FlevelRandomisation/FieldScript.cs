@@ -18,30 +18,28 @@ namespace _7hFlevel.FlevelRandomisation
             // We can make the following assumptions:
             // 1. The quantity is always 1.
             // Therefore, we can skip comparing the ID/bank and instead just compare the opening
-            var searchItem = new byte[] { 0x58, 0x00, 0x00, 0x00, 0x01};
-            var currentItem = new byte[5];
-            var maxSearchRange = data.Length - 9;
-            for (var o = 0; o < maxSearchRange; o++)
+            var searchItem = new byte[] { 0x58, 0x00, 0x01 };
+            var currentItem = new byte[3];
+            var maxSearchRangeItem = data.Length - 5;
+            for (var o = 0; o < maxSearchRangeItem; o++)
             {
                 currentItem[0] = data[o];       // Always 0x58
                 currentItem[1] = data[o + 1];   // Always 0x00
-                //currentItem[2] = data[o + 2]; // Varies so can't search statically
-                //currentItem[3] = data[o + 3]; // Varies so can't search statically
-                currentItem[4] = data[o + 4];   // Always 0x01, but may be rare cases where it is higher number like Mt. Corel
+                // Two bytes are skipped as they can vary (Item ID)
+                currentItem[2] = data[o + 4];   // Always 0x01, but may be rare cases where it is higher number like Mt. Corel
 
                 // If a match is found, we can call a method to change the string
-                if (searchItem.SequenceEqual(searchItem))
+                if (searchItem.SequenceEqual(currentItem))
                 {
                     // Call a method to select a new item here and write its data in using Index position
                     // Test
                     data[o] = 0x58; o++;
                     data[o] = 0x00; o++;
-                    data[o] = 0x00; o++;
-                    data[o] = 0x32; o++; // Item ID here
-                    data[o] = 0x01; o++; // Quantity here
+                    data[o] = 0x32; o++; // Item ID 1st byte
+                    data[o] = 0x00; o++; // Item ID 2nd byte
+                    data[o] = 0x09; o++; // Quantity here
                 }
             }
-
 
             // Change Item String
             // This could be sped up by opening the kernel2 and grabbing all the strings from there.
@@ -52,8 +50,8 @@ namespace _7hFlevel.FlevelRandomisation
 
             var searchString = new byte[] { 0x32, 0x45, 0x43, 0x45, 0x49, 0x56, 0x45, 0x44, 0x00, 0x02 };
             var currentString = new byte[10];
-            var maxSearchRange = data.Length - 9;
-            for (var o = 0; o < maxSearchRange; o++)
+            var maxSearchRangeString = data.Length - 9;
+            for (var o = 0; o < maxSearchRangeString; o++)
             {
                 currentString[0] = data[o];
                 currentString[1] = data[o + 1];
@@ -67,7 +65,8 @@ namespace _7hFlevel.FlevelRandomisation
                 currentString[9] = data[o + 9];
 
                 // If a match is found, we can call a method to change the string
-                if (searchString.SequenceEqual(searchString))
+                // if doesn't work swap search and current
+                if (searchString.SequenceEqual(currentString))
                 {
                     // Call a method to select a new item here and write its string in using Index position
 
