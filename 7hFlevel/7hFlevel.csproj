@@ -61,6 +61,7 @@
     <Compile Include="Helper\ConvertString.cs" />
     <Compile Include="Helper\EndianMethods.cs" />
     <Compile Include="Indexing\FieldModels.cs" />
+    <Compile Include="Indexing\ItemStrings.cs" />
     <Compile Include="LZSSHandling\DataFile.cs" />
     <Compile Include="LZSSHandling\DataItem.cs" />
     <Compile Include="LZSSHandling\FF7Files.cs" />

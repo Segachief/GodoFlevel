@@ -1,4 +1,5 @@
-﻿using System;
+﻿using _7hFlevel.Indexing;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,44 +11,15 @@ namespace _7hFlevel.FlevelRandomisation
     {
         public static byte[] ChangeItems(byte[] data)
         {
-            // Change Item ID
-            // Current issue; we can't search statically, and itemID can use 2-byte so effectively we can only search
-            // for 58 00, which is too short to avoid false positives. Is there a way to wild card it? Or resrict search
-            // to the script section only and not text?
+            Random rnd = new Random();
+            int r = 0; // Iterates new item string
+            int c = 0; // Iterates data when searching for item opcodes
+            int newItemID = rnd.Next(10); // Selects new Item ID
 
-            // We can make the following assumptions:
-            // 1. The quantity is always 1.
-            // Therefore, we can skip comparing the ID/bank and instead just compare the opening
-            var searchItem = new byte[] { 0x58, 0x00, 0x01 };
-            var currentItem = new byte[3];
-            var maxSearchRangeItem = data.Length - 5;
-            for (var o = 0; o < maxSearchRangeItem; o++)
-            {
-                currentItem[0] = data[o];       // Always 0x58
-                currentItem[1] = data[o + 1];   // Always 0x00
-                // Two bytes are skipped as they can vary (Item ID)
-                currentItem[2] = data[o + 4];   // Always 0x01, but may be rare cases where it is higher number like Mt. Corel
+            string fileLocation = "C:\\Users\\stewart.melville\\Downloads\\Default Files\\Default Files\\data\\field\\Chunks\\kernel.bin19";
+            var itemNames = ItemStrings.GetItemStrings(fileLocation); //  Retrieves item names from kernel2 in order of Item ID
 
-                // If a match is found, we can call a method to change the string
-                if (searchItem.SequenceEqual(currentItem))
-                {
-                    // Call a method to select a new item here and write its data in using Index position
-                    // Test
-                    data[o] = 0x58; o++;
-                    data[o] = 0x00; o++;
-                    data[o] = 0x32; o++; // Item ID 1st byte
-                    data[o] = 0x00; o++; // Item ID 2nd byte
-                    data[o] = 0x09; o++; // Quantity here
-                }
-            }
-
-            // Change Item String
-            // This could be sped up by opening the kernel2 and grabbing all the strings from there.
-            // Then I don't need to write them all out in hex.
-
-            // Matching the string to the actual item pickup will be difficult; will need to seek out the window ID
-            // and what text ID it's looking for. Will be fairly complex especially as they're not uniformly scripted.
-
+            // Searches for string 'Received "'
             var searchString = new byte[] { 0x32, 0x45, 0x43, 0x45, 0x49, 0x56, 0x45, 0x44, 0x00, 0x02 };
             var currentString = new byte[10];
             var maxSearchRangeString = data.Length - 9;
@@ -64,23 +36,47 @@ namespace _7hFlevel.FlevelRandomisation
                 currentString[8] = data[o + 8];
                 currentString[9] = data[o + 9];
 
-                // If a match is found, we can call a method to change the string
-                // if doesn't work swap search and current
+                // Match found for the string in this chunk
                 if (searchString.SequenceEqual(currentString))
                 {
-                    // Call a method to select a new item here and write its string in using Index position
+                    // Replace string with new item name
+                    while (itemNames[newItemID][r] != 0xFF)
+                    {
+                        data[o] = itemNames[newItemID][r]; o++; r++;
+                    }
+                    // Blank the rest of the string with 00s until the terminator FF
+                    while(data[o] != 0xFF)
+                    {
+                        data[o] = 0x00; o++;
+                    }
+                    r = 0;
 
-                    // Test - Success (Replaced Received with RRRRRR)
-                    data[o] = 0x32; o++;
-                    data[o] = 0x32; o++;
-                    data[o] = 0x32; o++;
-                    data[o] = 0x32; o++;
-                    data[o] = 0x32; o++;
-                    data[o] = 0x32; o++;
-                    data[o] = 0x32; o++;
-                    data[o] = 0x32; o++;
-                    data[o] = 0x32; o++;
-                    data[o] = 0x32; o++;
+                    // Now to find the item opcode; assuming they are in same order as text.
+                    // When a string is found, a search is conducted to find the next item Opcode.
+                    var searchItem = new byte[] { 0x58, 0x00, 0x01 };
+                    var currentItem = new byte[3];
+                    var maxSearchRangeItem = data.Length - 5;
+
+                    // You know you've hit rock bottom when you have to start assigning the value of a variable to itself.
+                    for (c = c; c < maxSearchRangeItem; c++)
+                    {
+                        currentItem[0] = data[c];       // Always 0x58
+                        currentItem[1] = data[c + 1];   // Always 0x00
+                                                        // Two bytes are skipped as they can vary (Item ID)
+                        currentItem[2] = data[c + 4];   // Always 0x01, but may be rare cases where it is higher number like Mt. Corel
+
+                        // If a match is found, we can call a method to change the string
+                        if (searchItem.SequenceEqual(currentItem))
+                        {
+                            // Call a method to select a new item here and write its data in using Index position
+                            // Test
+                            data[c] = 0x58; c++;
+                            data[c] = 0x00; c++;
+                            data[c] = (byte)newItemID; c++; // Item ID 1st byte
+                            data[c] = 0x00; c++; // Item ID 2nd byte
+                            data[c] = 0x09; c++; // Quantity here
+                        }
+                    }
                 }
             }
             return data;

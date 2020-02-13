@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
+using System.Text;
 using System.Windows.Forms;
 
 namespace _7hFlevel
@@ -375,10 +376,24 @@ namespace _7hFlevel
 
         private void BtnTest_Click(object sender, EventArgs e)
         {
-            string test = FieldModels.RandomModelSwap();
-            MessageBox.Show(test);
-            string testA = FieldModels.RandomAnimSwap();
-            MessageBox.Show(testA);
+            //string fileLocation = "C:\\Users\\stewart.melville\\Downloads\\Default Files\\Default Files\\data\\field\\Chunks\\kernel.bin19";
+            //var itemNames = ItemStrings.GetItemStrings(fileLocation);
+
+            //StringBuilder sb = new StringBuilder();
+
+            //string current;
+            //foreach (var item in itemNames)
+            //{
+            //    current = Encoding.ASCII.GetString(item.Value, 0, item.Value.Length);
+            //    sb.AppendFormat("{0} - {1}{2}", item.Key, current, Environment.NewLine);
+            //}
+            //string result = sb.ToString().TrimEnd();
+            //MessageBox.Show(result);
+
+            //string test = FieldModels.RandomModelSwap();
+            //MessageBox.Show(test);
+            //string testA = FieldModels.RandomAnimSwap();
+            //MessageBox.Show(testA);
         }
     }
 }
