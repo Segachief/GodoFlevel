@@ -8,9 +8,9 @@ namespace _7hFlevel.Helper
 {
     public class ConvertString
     {
-        public static byte[] GetNameBytes(string newHRC)
+        public static byte[] GetNameBytes(string newFile)
         {
-            byte[] nameBytes = Encoding.ASCII.GetBytes(newHRC); // Encodes the string into ASCII byte values
+            byte[] nameBytes = Encoding.ASCII.GetBytes(newFile); // Encodes the string into ASCII byte values
 
             return nameBytes;
         }

@@ -62,6 +62,7 @@
     <Compile Include="Helper\EndianMethods.cs" />
     <Compile Include="Indexing\FieldModels.cs" />
     <Compile Include="Indexing\ItemStrings.cs" />
+    <Compile Include="Indexing\MateriaStrings.cs" />
     <Compile Include="LZSSHandling\DataFile.cs" />
     <Compile Include="LZSSHandling\DataItem.cs" />
     <Compile Include="LZSSHandling\FF7Files.cs" />
@@ -73,6 +74,7 @@
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
     <Compile Include="LZSSHandling\Lzs.cs" />
+    <Compile Include="LZSSHandling\PSXFieldFile.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Form1.resx">

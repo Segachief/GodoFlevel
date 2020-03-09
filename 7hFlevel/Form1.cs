@@ -68,7 +68,8 @@ namespace _7hFlevel
                 var df = FF7Files.LoadLGP(fs, ea.Input);
                 int file = 0;
                 List<byte[]> chunks = new List<byte[]>();
-                string flev = Path.Combine(ea.Output, Path.GetFileName("newflevel.lgp"));
+                //string flev = Path.Combine(ea.Output, Path.GetFileName("flevel.lgp"));
+                string flev = Directory.GetCurrentDirectory() + "\\Output File\\flevel.lgp";
 
                 // Apply ToC and CRC to the new flevel
                 byte[] addStart = new byte[23301];
@@ -113,10 +114,16 @@ namespace _7hFlevel
                         // them through to the rando logic.
 
                         // Sends Field Script chunk of field to be randomised
-                        chunks[0] = FieldScript.ChangeItems(chunks[0]);
+                        if (chkItems.Checked)
+                        {
+                            chunks[0] = FieldScript.ChangeItemsMateria(chunks[0]);
+                        }
 
                         // Sends Model Loader chunk of field to be randomised
-                        //chunks[2] = ModelLoader.SwapFieldModels(chunks[2]);
+                        if (chkModels.Checked)
+                        {
+                            chunks[2] = ModelLoader.SwapFieldModels(chunks[2]);
+                        }
 
                         // Recompresses the chunks into a field
                         var field = FieldFile.Chunk(chunks, item.Name);
@@ -201,8 +208,8 @@ namespace _7hFlevel
             bw.RunWorkerCompleted += bw_RunWorkerCompleted;
             bw.RunWorkerAsync(new ExtractArgs()
             {
-                Input = txtInput.Text,  // Form property; enter Flevel's directory location
-                Output = txtOutput.Text, // Form property; where Chunks will be spat out
+                Input = Directory.GetCurrentDirectory() + "\\Default File\\flevel.lgp",  // Form property; enter Flevel's directory location
+                Output = Directory.GetCurrentDirectory() + "\\Output File\\flevel.lgp", // Form property; where Chunks will be spat out
                 Chunks = SectionsList.ToArray() // An array of selected options on the form
             });
         }
@@ -210,16 +217,83 @@ namespace _7hFlevel
         // Chunks an flevel and then re-assembles it.
         private void BtnCompress_Click(object sender, EventArgs e)
         {
+            SectionsList.Add(1);
+            SectionsList.Add(2);
+            SectionsList.Add(3);
+            SectionsList.Add(4);
+            SectionsList.Add(5);
+            SectionsList.Add(6);
+            SectionsList.Add(7);
+            SectionsList.Add(8);
+            SectionsList.Add(9);
+
+            //char[] charsToTrim = { '.'};
+
+            //DirectoryInfo d = new DirectoryInfo(@"D:\FF7 Hub\Model Hub\animlist");
+            //FileInfo[] Files = d.GetFiles("*"); //Getting files
+            //string str = "";
+            //foreach (FileInfo file in Files)
+            //{
+            //    str = str + ", " + file.Name.Substring(0, 4);
+            //}
+
+            //File.WriteAllText(@"D:\FF7 Hub\Model Hub\animlist\LISTED.txt", str);
+
+            string rootFolder = Directory.GetCurrentDirectory() + "\\Output File";
+            string prevFlevel = "flevel.lgp";
+
+            // Check if file exists with its full path
+            if (File.Exists(Path.Combine(rootFolder, prevFlevel)))
+            {
+                // If file found, delete it    
+                File.Delete(Path.Combine(rootFolder, prevFlevel));
+            }
+
             BackgroundWorker bw = new BackgroundWorker() { WorkerReportsProgress = true };
             bw.DoWork += bw_Compress;
             bw.ProgressChanged += bw_ProgressChanged;
             bw.RunWorkerCompleted += bw_RunWorkerCompleted;
             bw.RunWorkerAsync(new ExtractArgs()
             {
-                Input = txtInput.Text,  // Form property; enter Flevel's directory location
-                Output = txtOutput.Text, // Form property; where Chunks will be spat out
+                Input = Directory.GetCurrentDirectory() + "\\Default File\\flevel.lgp",  // Form property; enter Flevel's directory location
+                Output = Directory.GetCurrentDirectory() + "\\Output File\\flevel.lgp", // Form property; where Chunks will be spat out
                 Chunks = SectionsList.ToArray() // An array of selected options on the form
             });
+        }
+
+        void bw_CompressPSX(object sender, DoWorkEventArgs e)
+        {
+            ExtractArgs ea = (ExtractArgs)e.Argument;
+            using (var fs = new FileStream(ea.Input, FileMode.Open))
+            {
+                List<byte[]> chunks = new List<byte[]>();
+                string dat = Path.Combine(ea.Output, Path.GetFileName("NEW.DAT"));
+
+                byte[] ff = new byte[fs.Length];
+                fs.Position = 0;
+                fs.Read(ff, 0, ff.Length);
+
+                chunks = PSXFieldFile.Unchunk(ff, dat);
+
+                // >>>>
+                // Can adjust the uncompressed chunks here if need be before they go to recompression
+                // Randomisation tasks should be called here, triggered based on section #
+                // >>>>
+
+                using (var stream = new FileStream(dat, FileMode.Append))
+                {
+                    stream.Write(chunks[0], 0, chunks[0].Length);
+                }
+
+                // Recompresses the chunks into a field
+                var field = PSXFieldFile.Chunk(chunks, fs.Name);
+
+                // Write the compressed output as a new DAT file
+                using (var stream = new FileStream(dat, FileMode.Append))
+                {
+                    stream.Write(field, 0, field.Length);
+                }
+            }
         }
 
         private void BtnInput_Click(object sender, EventArgs e)
@@ -394,6 +468,20 @@ namespace _7hFlevel
             //MessageBox.Show(test);
             //string testA = FieldModels.RandomAnimSwap();
             //MessageBox.Show(testA);
+        }
+
+        private void btnPSXTest_Click(object sender, EventArgs e)
+        {
+            BackgroundWorker bw = new BackgroundWorker() { WorkerReportsProgress = true };
+            bw.DoWork += bw_CompressPSX;
+            bw.ProgressChanged += bw_ProgressChanged;
+            bw.RunWorkerCompleted += bw_RunWorkerCompleted;
+            bw.RunWorkerAsync(new ExtractArgs()
+            {
+                Input = Directory.GetCurrentDirectory() + "\\PSX\\FIELD\\ANCNT1.DAT",  // Form property; enter Flevel's directory location
+                Output = Directory.GetCurrentDirectory() + "\\PSX\\OUTPUT\\NEW.DAT", // Form property; where Chunks will be spat out
+                Chunks = SectionsList.ToArray() // An array of selected options on the form
+            });
         }
     }
 }

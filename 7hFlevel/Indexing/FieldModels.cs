@@ -13,17 +13,17 @@ namespace _7hFlevel.Indexing
         // Uniques should have their own Anim sets made, so if Consistent Model Swap is used then they can be given proper anims.
         // Probably do this for Objects too.
 
-        public static string RandomModelSwap()
+        public static string RandomModelSwap(Random rnd)
         {
             // Randomly allocates an .HRC
-            string newHRC = AllSkeletons.AssignModel();
+            string newHRC = AllSkeletons.AssignModel(rnd);
             return newHRC;
         }
 
-        public static string RandomAnimSwap()
+        public static string RandomAnimSwap(Random rnd)
         {
             // Randomly allocates an Anim
-            string newAnim = AllAnims.AssignAnim();
+            string newAnim = AllAnims.AssignAnim(rnd);
             return newAnim;
         }
 
@@ -49,7 +49,7 @@ namespace _7hFlevel.Indexing
             return "TEST";
         }
 
-            public static string MatchedAnimSwap(string oldAnim, string HRC)
+        public static string MatchedAnimSwap(string oldAnim, string HRC)
         {
             // Swaps Anims from within the source HRC's skeleton group
             // Uniques and Objects can be toggled on, but will be jumbled
@@ -68,7 +68,7 @@ namespace _7hFlevel.Indexing
             // Convert array to a Lookup and check for HRC key matches
             var lookupI = typeIAnimIndex.ToLookup(k => k.Key, v => v.Value);
             var matchesI = lookupI[HRC].ToList();
-            if(matchesI.Count != 0)
+            if (matchesI.Count != 0)
             {
                 // Go to a random index within the counted entries that match the HRC and assign it
                 newAnim = matchesI.Skip(rnd.Next(matchesI.Count)).First();

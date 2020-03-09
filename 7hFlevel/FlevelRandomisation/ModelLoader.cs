@@ -31,6 +31,7 @@ namespace _7hFlevel.FlevelRandomisation
                 modelCountByte[0] = data[o + 2];
                 modelCountByte[1] = data[o + 3];
                 int modelCount = EndianMethods.GetLittleEndianIntTwofer(modelCountByte, 0);
+                Random rnd = new Random();
                 o += 6; // Skip data position past the header
 
                 while (r < modelCount)
@@ -62,12 +63,12 @@ namespace _7hFlevel.FlevelRandomisation
                     string newHRC = currentHRC;
 
                     // temp var for testing, will be fed through to method from Form later
-                    bool rndModelSwap = false;
+                    bool rndModelSwap = true;
 
                     // Complete Random Swap
                     if (rndModelSwap)
                     {
-                        newHRC = FieldModels.RandomModelSwap();
+                        newHRC = FieldModels.RandomModelSwap(rnd);
                     }
 
                     // Converts the returned string into bytes
@@ -99,7 +100,7 @@ namespace _7hFlevel.FlevelRandomisation
                     // 0x00: Size of anim name string
                     // 0x02: Anim name string
                     // 0x02 + Size: Unknown, 2-byte value
-                    while(c < animCount)
+                    while (c < animCount)
                     {
                         // Take size of anim name and convert it into an int for array index
                         byte[] animNameSizeByte = new byte[2];
@@ -128,11 +129,11 @@ namespace _7hFlevel.FlevelRandomisation
                             newAnim = FieldModels.MatchedAnimSwap(currentAnim, newHRC);
                         }
 
-                        bool animTest = false;
+                        bool animTest = true;
                         // Complete Random
                         if (animTest == true)
                         {
-                            newAnim = FieldModels.RandomAnimSwap();
+                            newAnim = FieldModels.RandomAnimSwap(rnd);
                         }
 
                         // Converts the string into bytes

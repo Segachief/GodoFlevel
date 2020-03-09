@@ -8,3 +8,13 @@ D:\Practice\7hFlevel\7hFlevel\obj\Debug\7hFlevel.csproj.GenerateResource.cache
 D:\Practice\7hFlevel\7hFlevel\obj\Debug\7hFlevel.csproj.CoreCompileInputs.cache
 D:\Practice\7hFlevel\7hFlevel\obj\Debug\7hFlevel.exe
 D:\Practice\7hFlevel\7hFlevel\obj\Debug\7hFlevel.pdb
+C:\Users\stewart.melville\Downloads\GodoFlevel-master\GodoFlevel-master\7hFlevel\bin\Debug\7hFlevel.exe.config
+C:\Users\stewart.melville\Downloads\GodoFlevel-master\GodoFlevel-master\7hFlevel\bin\Debug\7hFlevel.exe
+C:\Users\stewart.melville\Downloads\GodoFlevel-master\GodoFlevel-master\7hFlevel\bin\Debug\7hFlevel.pdb
+C:\Users\stewart.melville\Downloads\GodoFlevel-master\GodoFlevel-master\7hFlevel\obj\Debug\7hFlevel.csprojAssemblyReference.cache
+C:\Users\stewart.melville\Downloads\GodoFlevel-master\GodoFlevel-master\7hFlevel\obj\Debug\_7hFlevel.Form1.resources
+C:\Users\stewart.melville\Downloads\GodoFlevel-master\GodoFlevel-master\7hFlevel\obj\Debug\_7hFlevel.Properties.Resources.resources
+C:\Users\stewart.melville\Downloads\GodoFlevel-master\GodoFlevel-master\7hFlevel\obj\Debug\7hFlevel.csproj.GenerateResource.cache
+C:\Users\stewart.melville\Downloads\GodoFlevel-master\GodoFlevel-master\7hFlevel\obj\Debug\7hFlevel.csproj.CoreCompileInputs.cache
+C:\Users\stewart.melville\Downloads\GodoFlevel-master\GodoFlevel-master\7hFlevel\obj\Debug\7hFlevel.exe
+C:\Users\stewart.melville\Downloads\GodoFlevel-master\GodoFlevel-master\7hFlevel\obj\Debug\7hFlevel.pdb

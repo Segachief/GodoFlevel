@@ -148,7 +148,7 @@ namespace _7hFlevel
 
                 // Finally, insert the whole string just read.
                 // The global variables match_length and match_position are set.
-                InsertNode(r);  
+                InsertNode(r);
                 do
                 {
                     // match_length may be spuriously long near the end of text.
@@ -185,7 +185,7 @@ namespace _7hFlevel
 
                         // If the position is near the end of buffer,
                         //  extend the buffer to make string comparison easier.
-                        if (s < F - 1) buffer[s + N] = (byte)c; 
+                        if (s < F - 1) buffer[s + N] = (byte)c;
                         s = (s + 1) & (N - 1); r = (r + 1) & (N - 1);
                         // Since this is a ring buffer, increment the position modulo N.
                         // Register the string in text_buf[r..r+F-1]
@@ -208,7 +208,7 @@ namespace _7hFlevel
 
 
             // was Decode(void) - Just the reverse of Encode().
-            public void Decode(Stream input, Stream output) 
+            public void Decode(Stream input, Stream output)
             {
                 int i, j, k, r, c;
                 int flags;
@@ -222,7 +222,7 @@ namespace _7hFlevel
                         // Uses higher byte to count 8
                         if ((c = input.ReadByte()) == -1) break;
                         flags = c | 0xff00;
-                    }							
+                    }
                     if ((flags & 1) != 0)
                     {
                         if ((c = input.ReadByte()) == -1) break;

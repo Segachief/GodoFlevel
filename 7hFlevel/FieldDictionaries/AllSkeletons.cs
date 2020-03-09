@@ -8,7 +8,7 @@ namespace _7hFlevel.FieldDictionaries
 {
     public class AllSkeletons
     {
-        public static string AssignModel()
+        public static string AssignModel(Random rnd)
         {
             List<string> index = new List<string> {
                 "AAAA",
@@ -178,7 +178,6 @@ namespace _7hFlevel.FieldDictionaries
                 "GTFC",
                 "GUBA",
                 "GWIF",
-                "GXGC",
                 "GXEF",
                 "GYDC",
                 "GZHF",
@@ -399,7 +398,6 @@ namespace _7hFlevel.FieldDictionaries
                 "HWIB",
                 "IAJD"
             };
-            Random rnd = new Random();
             int picker = rnd.Next(index.Count);
             return index[picker];
         }

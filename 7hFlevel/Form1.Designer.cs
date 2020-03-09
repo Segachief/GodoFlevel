@@ -53,6 +53,9 @@
             this.btnCompress = new System.Windows.Forms.Button();
             this.sectionAll = new System.Windows.Forms.CheckBox();
             this.btnTest = new System.Windows.Forms.Button();
+            this.btnPSXTest = new System.Windows.Forms.Button();
+            this.chkModels = new System.Windows.Forms.CheckBox();
+            this.chkItems = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // label3
@@ -244,7 +247,7 @@
             // 
             // btnExtract
             // 
-            this.btnExtract.Location = new System.Drawing.Point(98, 198);
+            this.btnExtract.Location = new System.Drawing.Point(17, 226);
             this.btnExtract.Margin = new System.Windows.Forms.Padding(2);
             this.btnExtract.Name = "btnExtract";
             this.btnExtract.Size = new System.Drawing.Size(138, 22);
@@ -284,12 +287,12 @@
             // 
             // btnCompress
             // 
-            this.btnCompress.Location = new System.Drawing.Point(325, 198);
+            this.btnCompress.Location = new System.Drawing.Point(325, 197);
             this.btnCompress.Margin = new System.Windows.Forms.Padding(2);
             this.btnCompress.Name = "btnCompress";
             this.btnCompress.Size = new System.Drawing.Size(138, 22);
             this.btnCompress.TabIndex = 45;
-            this.btnCompress.Text = "Compress";
+            this.btnCompress.Text = "Randomise";
             this.btnCompress.UseVisualStyleBackColor = true;
             this.btnCompress.Click += new System.EventHandler(this.BtnCompress_Click);
             // 
@@ -314,11 +317,44 @@
             this.btnTest.UseVisualStyleBackColor = true;
             this.btnTest.Click += new System.EventHandler(this.BtnTest_Click);
             // 
+            // btnPSXTest
+            // 
+            this.btnPSXTest.Location = new System.Drawing.Point(325, 223);
+            this.btnPSXTest.Margin = new System.Windows.Forms.Padding(2);
+            this.btnPSXTest.Name = "btnPSXTest";
+            this.btnPSXTest.Size = new System.Drawing.Size(138, 22);
+            this.btnPSXTest.TabIndex = 48;
+            this.btnPSXTest.Text = "PSX Test";
+            this.btnPSXTest.UseVisualStyleBackColor = true;
+            // 
+            // chkModels
+            // 
+            this.chkModels.AutoSize = true;
+            this.chkModels.Location = new System.Drawing.Point(218, 220);
+            this.chkModels.Name = "chkModels";
+            this.chkModels.Size = new System.Drawing.Size(93, 17);
+            this.chkModels.TabIndex = 51;
+            this.chkModels.Text = "Models/Anims";
+            this.chkModels.UseVisualStyleBackColor = true;
+            // 
+            // chkItems
+            // 
+            this.chkItems.AutoSize = true;
+            this.chkItems.Location = new System.Drawing.Point(218, 197);
+            this.chkItems.Name = "chkItems";
+            this.chkItems.Size = new System.Drawing.Size(91, 17);
+            this.chkItems.TabIndex = 50;
+            this.chkItems.Text = "Items/Materia";
+            this.chkItems.UseVisualStyleBackColor = true;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(540, 268);
+            this.Controls.Add(this.chkModels);
+            this.Controls.Add(this.chkItems);
+            this.Controls.Add(this.btnPSXTest);
             this.Controls.Add(this.btnTest);
             this.Controls.Add(this.sectionAll);
             this.Controls.Add(this.btnCompress);
@@ -378,6 +414,9 @@
         private System.Windows.Forms.Button btnCompress;
         private System.Windows.Forms.CheckBox sectionAll;
         private System.Windows.Forms.Button btnTest;
+        private System.Windows.Forms.Button btnPSXTest;
+        private System.Windows.Forms.CheckBox chkModels;
+        private System.Windows.Forms.CheckBox chkItems;
     }
 }
 
