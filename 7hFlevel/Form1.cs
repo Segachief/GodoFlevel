@@ -69,7 +69,7 @@ namespace _7hFlevel
                 int file = 0;
                 List<byte[]> chunks = new List<byte[]>();
                 //string flev = Path.Combine(ea.Output, Path.GetFileName("flevel.lgp"));
-                string flev = Directory.GetCurrentDirectory() + "\\Output File\\flevel.lgp";
+                string flev = Directory.GetCurrentDirectory() + "\\PC\\Output File\\flevel.lgp";
 
                 // Apply ToC and CRC to the new flevel
                 byte[] addStart = new byte[23301];
@@ -116,7 +116,7 @@ namespace _7hFlevel
                         // Sends Field Script chunk of field to be randomised
                         if (chkItems.Checked)
                         {
-                            chunks[0] = FieldScript.ChangeItemsMateria(chunks[0]);
+                            chunks[0] = FieldScript.ChangeItemsMateria(chunks[0], item.Name);
                         }
 
                         // Sends Model Loader chunk of field to be randomised
@@ -208,7 +208,7 @@ namespace _7hFlevel
             bw.RunWorkerCompleted += bw_RunWorkerCompleted;
             bw.RunWorkerAsync(new ExtractArgs()
             {
-                Input = Directory.GetCurrentDirectory() + "\\Default File\\flevel.lgp",  // Form property; enter Flevel's directory location
+                Input = Directory.GetCurrentDirectory() + "\\Input File\\flevel.lgp",  // Form property; enter Flevel's directory location
                 Output = Directory.GetCurrentDirectory() + "\\Output File\\flevel.lgp", // Form property; where Chunks will be spat out
                 Chunks = SectionsList.ToArray() // An array of selected options on the form
             });
@@ -227,6 +227,7 @@ namespace _7hFlevel
             SectionsList.Add(8);
             SectionsList.Add(9);
 
+            // Debug method for building a list of animation files
             //char[] charsToTrim = { '.'};
 
             //DirectoryInfo d = new DirectoryInfo(@"D:\FF7 Hub\Model Hub\animlist");
@@ -239,7 +240,7 @@ namespace _7hFlevel
 
             //File.WriteAllText(@"D:\FF7 Hub\Model Hub\animlist\LISTED.txt", str);
 
-            string rootFolder = Directory.GetCurrentDirectory() + "\\Output File";
+            string rootFolder = Directory.GetCurrentDirectory() + "\\PC\\Output File";
             string prevFlevel = "flevel.lgp";
 
             // Check if file exists with its full path
@@ -255,8 +256,8 @@ namespace _7hFlevel
             bw.RunWorkerCompleted += bw_RunWorkerCompleted;
             bw.RunWorkerAsync(new ExtractArgs()
             {
-                Input = Directory.GetCurrentDirectory() + "\\Default File\\flevel.lgp",  // Form property; enter Flevel's directory location
-                Output = Directory.GetCurrentDirectory() + "\\Output File\\flevel.lgp", // Form property; where Chunks will be spat out
+                Input = Directory.GetCurrentDirectory() + "\\PC\\Input File\\flevel.lgp",  // Form property; enter Flevel's directory location
+                Output = Directory.GetCurrentDirectory() + "\\PC\\Output File\\flevel.lgp", // Form property; where Chunks will be spat out
                 Chunks = SectionsList.ToArray() // An array of selected options on the form
             });
         }
@@ -298,12 +299,13 @@ namespace _7hFlevel
 
         private void BtnInput_Click(object sender, EventArgs e)
         {
-            txtInput.Text = "C:\\Users\\stewart.melville\\Downloads\\Default Files\\Default Files\\data\\field\\flevel.lgp";
+            txtInput.Text = Directory.GetCurrentDirectory() + "\\PC\\Input File\\flevel.lgp";
         }
 
         private void BtnOutput_Click(object sender, EventArgs e)
         {
-            txtOutput.Text = "C:\\Users\\stewart.melville\\Downloads\\Default Files\\Default Files\\data\\field\\Chunks";
+            txtOutput.Text = Directory.GetCurrentDirectory() + "\\PC\\Chunks";
+            
         }
 
         // Handles checkbox options for sections

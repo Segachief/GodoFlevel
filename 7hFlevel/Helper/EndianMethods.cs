@@ -81,5 +81,11 @@ namespace _7hFlevel
             return (data[startIndex + 1] << 8)
                  | data[startIndex];
         }
+
+        public static int GetBigEndianIntTwofer(byte[] data, int startIndex)
+        {
+            return (data[startIndex + 1])
+                 | data[startIndex] << 8;
+        }
     }
 }
