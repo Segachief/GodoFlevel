@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -80,5 +81,98 @@ namespace _7hFlevel.Indexing
                 fs.Close();
             }
         }
+
+
+        public static int GetItemID(List<byte> oldItemName)
+        {
+            byte[] terminator = { 0xFF };
+            int itemID = 0;
+
+            FileStream item = File.OpenRead(Directory.GetCurrentDirectory() + "\\Kernel Strings\\kernel.bin19");
+            byte[] dataItem = new byte[item.Length];
+            item.Read(dataItem, 0, Convert.ToInt32(item.Length));
+            item.Close();
+
+            FileStream weapon = File.OpenRead(Directory.GetCurrentDirectory() + "\\Kernel Strings\\kernel.bin20");
+            byte[] dataWeapon = new byte[weapon.Length];
+            weapon.Read(dataWeapon, 0, Convert.ToInt32(weapon.Length));
+            weapon.Close();
+
+            FileStream armour = File.OpenRead(Directory.GetCurrentDirectory() + "\\Kernel Strings\\kernel.bin21");
+            byte[] dataArmour = new byte[armour.Length];
+            armour.Read(dataArmour, 0, Convert.ToInt32(armour.Length));
+            armour.Close();
+
+            FileStream accessory = File.OpenRead(Directory.GetCurrentDirectory() + "\\Kernel Strings\\kernel.bin22");
+            byte[] dataAccessory = new byte[accessory.Length];
+            accessory.Read(dataAccessory, 0, Convert.ToInt32(accessory.Length));
+            accessory.Close();
+
+            try
+            {
+                for (int r = 0; r < dataItem.Length; r++)
+                {
+                    if (dataItem.Skip(r).Take(terminator.Length).SequenceEqual(terminator))
+                    {
+                        itemID++;
+                    }
+
+                    if (dataItem.Skip(r).Take(oldItemName.Count).SequenceEqual(oldItemName))
+                    {
+                        return itemID;
+                    }
+                }
+
+                itemID = 128;
+                for (int o = 0; o < dataWeapon.Length; o++)
+                {
+                    if (dataWeapon.Skip(o).Take(terminator.Length).SequenceEqual(terminator))
+                    {
+                        itemID++;
+                    }
+
+                    if (dataWeapon.Skip(o).Take(oldItemName.Count).SequenceEqual(oldItemName))
+                    {
+                        return itemID;
+                    }
+                }
+
+                itemID = 256;
+                for (int c = 0; c < dataArmour.Length; c++)
+                {
+                    if (dataArmour.Skip(c).Take(terminator.Length).SequenceEqual(terminator))
+                    {
+                        itemID++;
+                    }
+
+                    if (dataArmour.Skip(c).Take(oldItemName.Count).SequenceEqual(oldItemName))
+                    {
+                        return itemID;
+                    }
+                }
+
+                itemID = 288;
+                for (int k = 0; k < dataAccessory.Length; k++)
+                {
+                    if (dataAccessory.Skip(k).Take(terminator.Length).SequenceEqual(terminator))
+                    {
+                        itemID++;
+                    }
+
+                    if (dataAccessory.Skip(k).Take(oldItemName.Count).SequenceEqual(oldItemName))
+                    {
+                        return itemID;
+                    }
+                }
+                Trace.WriteLine("No matches in getting old Item ID - Used 0 as fallback");
+                return 0;
+            }
+            catch
+            {
+                Trace.WriteLine("Error in getting old Item ID");
+                return 0;
+            }
+        }
+
     }
 }

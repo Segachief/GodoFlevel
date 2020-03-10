@@ -1,6 +1,7 @@
 ﻿using _7hFlevel.Indexing;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -19,18 +20,12 @@ namespace _7hFlevel.FlevelRandomisation
             textStart[1] = data[5];
             int textOffset = EndianMethods.GetLittleEndianIntTwofer(textStart, 0);
 
-            //if(textOffset < data.Length)
-            //{
-            //    textStart[0] = data[3];
-            //    textStart[1] = data[4];
-            //    textOffset = EndianMethods.GetBigEndianIntTwofer(textStart, 0);
-            //}
-
             if (name == "qd")
             {
-                // Breakpoint to analyse qd's allocation of items
+                // Breakpoint sink to analyse qd's allocation of items
             }
 
+            // Prevents an out of bounds exception and returns data unaltered
             if (textOffset >= data.Length)
             {
                 return data;
@@ -43,11 +38,12 @@ namespace _7hFlevel.FlevelRandomisation
             // reduce possibility of false positives.
             var maxSearchRangeDialogue = data.Length - 3;
             var currentDialogue = new byte[1];
-            var searchDialogue = new byte[] { 0x40 };
+            var searchDialogue = new byte[] { 0x40 }; // This is the opcode, the only 1 of the 3 bytes that is static
             List<int> usedTexts = new List<int>();
             for (int k = 0; k < maxSearchRangeDialogue; k++)
             {
-                currentDialogue[0] = data[k];       // OpCode 0x40            
+                // OpCode 0x40
+                currentDialogue[0] = data[k];
 
                 // If a match is found, we can call a method to change the string
                 if (searchDialogue.SequenceEqual(currentDialogue))
@@ -56,7 +52,7 @@ namespace _7hFlevel.FlevelRandomisation
                     if (data[k + 1] < 4)
                     {
                         // Then check that the dialogue ID is a valid value
-                        if (data[k + 2] <= textCount)
+                        if (data[k + 2] < textCount)
                         {
                             // Add the text ID set to this opcode to our list of used texts
                             // Exclude duplicates
@@ -68,27 +64,44 @@ namespace _7hFlevel.FlevelRandomisation
                     }
                 }
             }
-
+            if(name == "bugin1b")
+            {
+                // Master Magic/Command/Summon texts have false positives, prune them
+                usedTexts.Remove(14);
+                usedTexts.Remove(16);
+                usedTexts.Remove(17);
+            }
+            if(name == "eals_1")
+            {
+                // Received texts on this field start with 2 spaces, throwing it off
+                return data;
+            }
+            if (name == "zz6")
+            {
+                // Has no 'Materia!' at the end of its Materia string, gets flagged as an item instead
+                return data;
+            }
 
             Random rnd = new Random();
             int r = 0; // Iterates new item string
             int c = 0; // Iterates data when searching for item opcodes
             string itemFileLocation = "";
-            string materiaFileLocation = Directory.GetCurrentDirectory() + "\\Kernel Strings\\kernel.bin23";
-            var materiaNames = MateriaStrings.GetMateriaStrings(materiaFileLocation);
+            var materiaNames = MateriaStrings.GetMateriaStrings(Directory.GetCurrentDirectory() + "\\Kernel Strings\\kernel.bin23");
 
             var terminator = new byte[1];
             int offset = 0;
             var currentString = new byte[10];
             var maxSearchRangeString = data.Length - 9;
 
-            var searchItem = new byte[] { 0x58, 0x00, 0x01 };
-            var searchFinalItem = new byte[] { 0x58, 0x00, 0x02 };
-            var currentItem = new byte[3];
+            //var searchFinalItem = new byte[] { 0x58, 0x00, 0x02 };
             var maxSearchRangeItem = data.Length - 5;
             bool matchFound = false;
 
-            byte[] oldName = new byte[40];
+            var currentMateria = new byte[7];
+            var currentItem = new byte[5];
+
+            //byte[] oldName = 40];
+            List<byte> oldName = new List<byte>();
             int oldMateriaID = 0;
             int oldItemID = 0;
 
@@ -101,16 +114,11 @@ namespace _7hFlevel.FlevelRandomisation
             // Tracks the current Text ID based on how many terminators have been read; compared to List of Used Text IDs
             int textID = 0;
 
-            // Checks for Materia first, then Items; Received will be overwritten by Materia check so no
-            // overlap should occur.
+            // Checks for Materia first, then Items; Received will be overwritten by Materia check so no overlap should occur.
 
             // If materia option is on
             for (var y = textOffset + (textCount * 2); y < maxSearchRangeString; y++)
             {
-
-                // What could do is, have a var that looks for FF while we search and records its offset.
-                // That way can jump to start of the string that has matched.
-
                 terminator[0] = data[y];
 
                 currentString[0] = data[y];
@@ -135,22 +143,34 @@ namespace _7hFlevel.FlevelRandomisation
                 {
                     if (usedTexts.Contains(textID))
                     {
-                        int newMateriaID = rnd.Next(91); // Selects new Item ID
-                        while (newMateriaID > 104 && newMateriaID < 128)
+                        // Selects new Item ID
+                        int newMateriaID = rnd.Next(91);
+
+                        // Re-rolls until ID is valid
+                        while (newMateriaID != 22 &&
+                            newMateriaID != 38 &&
+                            newMateriaID != 45 &&
+                            newMateriaID != 46 &&
+                            newMateriaID != 47 &&
+                            newMateriaID != 63 &&
+                            newMateriaID != 66 &&
+                            newMateriaID != 67)
                         {
-                            newMateriaID = rnd.Next(91); // Selects new Item ID
+                            newMateriaID = rnd.Next(91);
                         }
 
+                        // Skips past the Receieved " part of the string to the Materia Name
                         int countCharacters = offset + 10;
-                        int z = 0;
-                        // Get old Materia name and match it to its ID
+
+                        // Get old Materia name and match it to its ID; 0x02 is the terminator (")
                         while(data[countCharacters] != 0x02)
                         {
-                            oldName[z] = data[countCharacters];
-                            z++; countCharacters++;
+                            oldName.Add(data[countCharacters]);
+                            countCharacters++;
                         }
 
-                        oldMateriaID = MateriaStrings.GetMateriaID(oldName, materiaFileLocation);
+                        // Figure out the Materia ID by matching the name in the kernel strings
+                        oldMateriaID = MateriaStrings.GetMateriaID(oldName);
 
                         // Replace string with new Materia name
                         while (materiaNames[newMateriaID][r] != 0xFF)
@@ -163,13 +183,13 @@ namespace _7hFlevel.FlevelRandomisation
                         {
                             data[offset] = 0x00; offset++;
                         }
+                        Trace.WriteLine("Rewrote Materia String");
                         y++;
                         r = 0;
 
                         // Now to find the Materia opcode; assuming they are in same order as text.
                         // When a string is found, a search is conducted to find the next Materia opcode.
-                        var searchMateria = new byte[] { 0x5B, 0x00, 0x00, 0x00, 0x00, 0x00 };
-                        var currentMateria = new byte[6];
+                        var searchMateria = new byte[] { 0x5B, 0x00, 0x00, (byte)oldMateriaID, 0x00, 0x00, 0x00 };
                         maxSearchRangeItem = data.Length - 6;
 
                         // You know you've hit rock bottom when you have to start assigning the value of a variable to itself.
@@ -178,10 +198,10 @@ namespace _7hFlevel.FlevelRandomisation
                             currentMateria[0] = data[c];       // Always 0x5B
                             currentMateria[1] = data[c + 1];   // Always 0x00
                             currentMateria[2] = data[c + 2];   // Always 0x00
-                                                               // Skipped as this is the ID and varies
-                            currentMateria[3] = data[c + 4];   // Always 0x00
-                            currentMateria[4] = data[c + 5];   // Always 0x00
-                            currentMateria[5] = data[c + 6];   // Always 0x00
+                            currentMateria[3] = data[c + 3];   // Old Materia ID
+                            currentMateria[4] = data[c + 4];   // Always 0x00
+                            currentMateria[5] = data[c + 5];   // Always 0x00
+                            currentMateria[6] = data[c + 6];   // Always 0x00
 
                             // If a match is found, we can call a method to change the string
                             if (searchMateria.SequenceEqual(currentMateria))
@@ -193,12 +213,14 @@ namespace _7hFlevel.FlevelRandomisation
                                 data[c] = 0x00; c++;
                                 data[c] = 0x00; c++;
                                 data[c] = 0x00; c++;
+                                Trace.WriteLine("A Materia was rewritten successfully");
                             }
                         }
                         usedTexts.Remove(textID);
                     }
                 }
             }
+            offset = 0;
             r = 0;
             c = 0;
             textID = 0;
@@ -223,6 +245,7 @@ namespace _7hFlevel.FlevelRandomisation
                 if (terminator[0] == 0xFF)
                 {
                     textID++;
+                    offset = o;
                 }
 
                 // Match found for the string in this chunk
@@ -253,7 +276,20 @@ namespace _7hFlevel.FlevelRandomisation
                             itemFileLocation = Directory.GetCurrentDirectory() + "\\Kernel Strings\\kernel.bin22";
                         }
 
-                        // Get a list of the item names (for this ID's group)
+                        // Skips past the Receieved " part of the string to the Materia Name
+                        int countItemCharacters = offset + 10;
+
+                        // Get old Materia name and match it to its ID; 0x02 is the terminator (")
+                        while (data[countItemCharacters] != 0x02)
+                        {
+                            oldName.Add(data[countItemCharacters]);
+                            countItemCharacters++;
+                        }
+                        // Currently, this is sending unmatching nonsense to the method. Check that the name is being retrieved correctly.
+
+                        // Figure out the Item ID by matching the name in the kernel strings
+                        oldItemID = ItemStrings.GetItemID(oldName);
+
                         var itemNames = ItemStrings.GetItemStrings(itemFileLocation, newItemID);
 
                         // Replace string with new item name
@@ -266,22 +302,25 @@ namespace _7hFlevel.FlevelRandomisation
                         {
                             data[o] = 0x00; o++;
                         }
+                        Trace.WriteLine("Rewrote Item String");
                         r = 0;
 
                         // Now to find the item opcode; assuming they are in same order as text.
                         // When a string is found, a search is conducted to find the next item Opcode.
-                        //searchItem = new byte[] { 0x58, 0x00, 0x01 };
-                        //currentItem = new byte[3];
-                        //maxSearchRangeItem = data.Length - 5;
-                        //matchFound = false;
+
+                        ulong convertOldItemID = (ulong)oldItemID;
+                        byte[] oldItemIDByte = EndianMethods.GetLittleEndianConvert(convertOldItemID);
+
+                        var searchItem = new byte[] { 0x58, 0x00, oldItemIDByte[0], oldItemIDByte[1], 0x01 };
 
                         // You know you've hit rock bottom when you have to start assigning the value of a variable to itself.
                         for (c = c; c < maxSearchRangeItem; c++)
                         {
                             currentItem[0] = data[c];       // Always 0x58
                             currentItem[1] = data[c + 1];   // Always 0x00
-                                                            // Two bytes are skipped as they can vary (Item ID)
-                            currentItem[2] = data[c + 4];   // Always 0x01, but may be rare cases where it is higher number like Mt. Corel
+                            currentItem[2] = data[c + 2];   // Old Item ID - 2 Bytes
+                            currentItem[3] = data[c + 3];
+                            currentItem[4] = data[c + 4];   // Always 0x01, but may be rare cases where it is higher number like Mt. Corel
 
                             // MatchFound stops the process from continuing as this would hit the other item opcodes and incorrectly change them
                             if (matchFound == false)
@@ -297,8 +336,9 @@ namespace _7hFlevel.FlevelRandomisation
                                     data[c] = 0x00; c++;
                                     data[c] = convertedItemID[0]; c++; // Item ID 1st byte
                                     data[c] = convertedItemID[1]; c++; // Item ID 2nd byte
-                                    data[c] = 0x02; c++; // Quantity here - Setting 02 prevents it from being changed again
+                                    data[c] = 0x01; c++; // Quantity here - Setting 02 prevents it from being changed again
                                     matchFound = true;
+                                    Trace.WriteLine("An item ID was rewritten");
                                 }
                             }
                         }
@@ -308,25 +348,25 @@ namespace _7hFlevel.FlevelRandomisation
                     }
                 }
             }
-            c = 0;
-            // Final Pass to revert items back to 01 quantity (or vary it)
-            for (c = c; c < maxSearchRangeItem; c++)
-            {
-                currentItem[0] = data[c];       // Always 0x58
-                currentItem[1] = data[c + 1];   // Always 0x00
-                                                // Two bytes are skipped as they can vary (Item ID)
-                currentItem[2] = data[c + 4];   // Always 0x01, but may be rare cases where it is higher number like Mt. Corel
+            //c = 0;
+            //// Final Pass to revert items back to 01 quantity (or vary it)
+            //for (c = c; c < maxSearchRangeItem; c++)
+            //{
+            //    currentItem[0] = data[c];       // Always 0x58
+            //    currentItem[1] = data[c + 1];   // Always 0x00
+            //                                    // Two bytes are skipped as they can vary (Item ID)
+            //    currentItem[2] = data[c + 4];   // Always 0x01, but may be rare cases where it is higher number like Mt. Corel
 
-                // If a match is found, we can call a method to change the string
-                if (searchFinalItem.SequenceEqual(currentItem))
-                {
-                    c++;
-                    c++;
-                    c++;
-                    c++;
-                    data[c] = 0x01; c++; // Can change this if user specified it
-                }
-            }
+            //    // If a match is found, we can call a method to change the string
+            //    if (searchFinalItem.SequenceEqual(currentItem))
+            //    {
+            //        c++;
+            //        c++;
+            //        c++;
+            //        c++;
+            //        data[c] = 0x01; c++; // Can change this if user specified it
+            //    }
+            //}
             return data;
         }
     }
