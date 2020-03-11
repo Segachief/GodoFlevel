@@ -25,6 +25,11 @@ namespace _7hFlevel.FlevelRandomisation
                 // Breakpoint sink to analyse qd's allocation of items
             }
 
+            if (name == "mds7_w2")
+            {
+                // Breakpoint sink to analyse qd's allocation of items
+            }
+
             // Prevents an out of bounds exception and returns data unaltered
             if (textOffset >= data.Length)
             {
@@ -84,7 +89,7 @@ namespace _7hFlevel.FlevelRandomisation
 
             Random rnd = new Random();
             int r = 0; // Iterates new item string
-            int c = 0; // Iterates data when searching for item opcodes
+            //int c = 0; // Iterates data when searching for item opcodes
             string itemFileLocation = "";
             var materiaNames = MateriaStrings.GetMateriaStrings(Directory.GetCurrentDirectory() + "\\Kernel Strings\\kernel.bin23");
 
@@ -147,16 +152,20 @@ namespace _7hFlevel.FlevelRandomisation
                         int newMateriaID = rnd.Next(91);
 
                         // Re-rolls until ID is valid
-                        while (newMateriaID != 22 &&
-                            newMateriaID != 38 &&
-                            newMateriaID != 45 &&
-                            newMateriaID != 46 &&
-                            newMateriaID != 47 &&
-                            newMateriaID != 63 &&
-                            newMateriaID != 66 &&
-                            newMateriaID != 67)
+                        while (newMateriaID == 22 ||
+                            newMateriaID == 38 ||
+                            newMateriaID == 45 ||
+                            newMateriaID == 46 ||
+                            newMateriaID == 47 ||
+                            newMateriaID == 63 ||
+                            newMateriaID == 66 ||
+                            newMateriaID == 67)
                         {
                             newMateriaID = rnd.Next(91);
+                            if(newMateriaID == 91)
+                            {
+                                // break
+                            }
                         }
 
                         // Skips past the Receieved " part of the string to the Materia Name
@@ -171,6 +180,7 @@ namespace _7hFlevel.FlevelRandomisation
 
                         // Figure out the Materia ID by matching the name in the kernel strings
                         oldMateriaID = MateriaStrings.GetMateriaID(oldName);
+                        oldName.Clear();
 
                         // Replace string with new Materia name
                         while (materiaNames[newMateriaID][r] != 0xFF)
@@ -193,7 +203,7 @@ namespace _7hFlevel.FlevelRandomisation
                         maxSearchRangeItem = data.Length - 6;
 
                         // You know you've hit rock bottom when you have to start assigning the value of a variable to itself.
-                        for (c = c; c < maxSearchRangeItem; c++)
+                        for (int c = 0; c < maxSearchRangeItem; c++)
                         {
                             currentMateria[0] = data[c];       // Always 0x5B
                             currentMateria[1] = data[c + 1];   // Always 0x00
@@ -222,7 +232,7 @@ namespace _7hFlevel.FlevelRandomisation
             }
             offset = 0;
             r = 0;
-            c = 0;
+            //c = 0;
             textID = 0;
 
             // If item option is on
@@ -245,7 +255,7 @@ namespace _7hFlevel.FlevelRandomisation
                 if (terminator[0] == 0xFF)
                 {
                     textID++;
-                    offset = o;
+                    offset = o + 1;
                 }
 
                 // Match found for the string in this chunk
@@ -314,7 +324,7 @@ namespace _7hFlevel.FlevelRandomisation
                         var searchItem = new byte[] { 0x58, 0x00, oldItemIDByte[0], oldItemIDByte[1], 0x01 };
 
                         // You know you've hit rock bottom when you have to start assigning the value of a variable to itself.
-                        for (c = c; c < maxSearchRangeItem; c++)
+                        for (int c = 0; c < maxSearchRangeItem; c++)
                         {
                             currentItem[0] = data[c];       // Always 0x58
                             currentItem[1] = data[c + 1];   // Always 0x00
@@ -342,7 +352,7 @@ namespace _7hFlevel.FlevelRandomisation
                                 }
                             }
                         }
-                        c = 0;
+                        //c = 0;
                         matchFound = false;
                         usedTexts.Remove(textID);
                     }
