@@ -85,83 +85,183 @@ namespace _7hFlevel.Indexing
 
         public static int GetItemID(List<byte> oldItemName)
         {
+            if(oldItemName.Count == 0)
+            {
+                Trace.WriteLine("Empty item name was received");
+                return 0;
+            }
+
             byte[] terminator = { 0xFF };
+            byte[] firstCharacter = new byte[] { oldItemName[0] };
             int itemID = 0;
+            bool falsePositive = false;
 
             FileStream item = File.OpenRead(Directory.GetCurrentDirectory() + "\\Kernel Strings\\kernel.bin19");
             byte[] dataItem = new byte[item.Length];
             item.Read(dataItem, 0, Convert.ToInt32(item.Length));
             item.Close();
 
+            byte[] itemOffset = new byte[2];
+            itemOffset[0] = dataItem[0];
+            itemOffset[1] = dataItem[1];
+            int itemOffsetInt = EndianMethods.GetLittleEndianIntTwofer(itemOffset, 0);
+
             FileStream weapon = File.OpenRead(Directory.GetCurrentDirectory() + "\\Kernel Strings\\kernel.bin20");
             byte[] dataWeapon = new byte[weapon.Length];
             weapon.Read(dataWeapon, 0, Convert.ToInt32(weapon.Length));
             weapon.Close();
+
+            byte[] weaponOffset = new byte[2];
+            weaponOffset[0] = dataWeapon[0];
+            weaponOffset[1] = dataWeapon[1];
+            int weaponOffsetInt = EndianMethods.GetLittleEndianIntTwofer(weaponOffset, 0);
 
             FileStream armour = File.OpenRead(Directory.GetCurrentDirectory() + "\\Kernel Strings\\kernel.bin21");
             byte[] dataArmour = new byte[armour.Length];
             armour.Read(dataArmour, 0, Convert.ToInt32(armour.Length));
             armour.Close();
 
+            byte[] armourOffset = new byte[2];
+            armourOffset[0] = dataArmour[0];
+            armourOffset[1] = dataArmour[1];
+            int armourOffsetInt = EndianMethods.GetLittleEndianIntTwofer(armourOffset, 0);
+
             FileStream accessory = File.OpenRead(Directory.GetCurrentDirectory() + "\\Kernel Strings\\kernel.bin22");
             byte[] dataAccessory = new byte[accessory.Length];
             accessory.Read(dataAccessory, 0, Convert.ToInt32(accessory.Length));
             accessory.Close();
 
+            byte[] accessoryOffset = new byte[2];
+            accessoryOffset[0] = dataAccessory[0];
+            accessoryOffset[1] = dataAccessory[1];
+            int accessoryOffsetInt = EndianMethods.GetLittleEndianIntTwofer(accessoryOffset, 0);
+
             try
             {
-                for (int r = 0; r < dataItem.Length; r++)
+                for (int r = itemOffsetInt; r < dataItem.Length; r++)
                 {
                     if (dataItem.Skip(r).Take(terminator.Length).SequenceEqual(terminator))
                     {
                         itemID++;
+                        // Prevents out of range
+                        if ((r + 1) < dataItem.Length)
+                        {
+                            // Some Item names appear within other Item names
+                            // This checks the first character after a terminator for a match and if it isn't it will
+                            // prevent the sequenceEqual from returning true.
+                            if (dataItem[r + 1] != firstCharacter[0])
+                            {
+                                falsePositive = true;
+                            }
+                            else
+                            {
+                                falsePositive = false;
+                                r++;
+                            }
+                        }
                     }
-
-                    if (dataItem.Skip(r).Take(oldItemName.Count).SequenceEqual(oldItemName))
+                    if (!falsePositive)
                     {
-                        return itemID;
+                        if (dataItem.Skip(r).Take(oldItemName.Count).SequenceEqual(oldItemName))
+                        {
+                            return itemID;
+                        }
                     }
                 }
 
                 itemID = 128;
-                for (int o = 0; o < dataWeapon.Length; o++)
+                for (int o = weaponOffsetInt; o < dataWeapon.Length; o++)
                 {
                     if (dataWeapon.Skip(o).Take(terminator.Length).SequenceEqual(terminator))
                     {
                         itemID++;
+                        // Prevents out of range
+                        if ((o + 1) < dataWeapon.Length)
+                        {
+                            // Some Item names appear within other Item names
+                            // This checks the first character after a terminator for a match and if it isn't it will
+                            // prevent the sequenceEqual from returning true.
+                            if (dataWeapon[o + 1] != firstCharacter[0])
+                            {
+                                falsePositive = true;
+                            }
+                            else
+                            {
+                                falsePositive = false;
+                                o++;
+                            }
+                        }
                     }
-
-                    if (dataWeapon.Skip(o).Take(oldItemName.Count).SequenceEqual(oldItemName))
+                    if (!falsePositive)
                     {
-                        return itemID;
+                        if (dataWeapon.Skip(o).Take(oldItemName.Count).SequenceEqual(oldItemName))
+                        {
+                            return itemID;
+                        }
                     }
                 }
 
                 itemID = 256;
-                for (int c = 0; c < dataArmour.Length; c++)
+                for (int c = armourOffsetInt; c < dataArmour.Length; c++)
                 {
                     if (dataArmour.Skip(c).Take(terminator.Length).SequenceEqual(terminator))
                     {
                         itemID++;
+                        // Prevents out of range
+                        if ((c + 1) < dataArmour.Length)
+                        {
+                            // Some Item names appear within other Item names
+                            // This checks the first character after a terminator for a match and if it isn't it will
+                            // prevent the sequenceEqual from returning true.
+                            if (dataArmour[c + 1] != firstCharacter[0])
+                            {
+                                falsePositive = true;
+                            }
+                            else
+                            {
+                                falsePositive = false;
+                                c++;
+                            }
+                        }
                     }
-
-                    if (dataArmour.Skip(c).Take(oldItemName.Count).SequenceEqual(oldItemName))
+                    if (!falsePositive)
                     {
-                        return itemID;
+                        if (dataArmour.Skip(c).Take(oldItemName.Count).SequenceEqual(oldItemName))
+                        {
+                            return itemID;
+                        }
                     }
                 }
 
                 itemID = 288;
-                for (int k = 0; k < dataAccessory.Length; k++)
+                for (int k = accessoryOffsetInt; k < dataAccessory.Length; k++)
                 {
                     if (dataAccessory.Skip(k).Take(terminator.Length).SequenceEqual(terminator))
                     {
                         itemID++;
+                        // Prevents out of range
+                        if ((k + 1) < dataAccessory.Length)
+                        {
+                            // Some Item names appear within other Item names
+                            // This checks the first character after a terminator for a match and if it isn't it will
+                            // prevent the sequenceEqual from returning true.
+                            if (dataAccessory[k + 1] != firstCharacter[0])
+                            {
+                                falsePositive = true;
+                            }
+                            else
+                            {
+                                falsePositive = false;
+                                k++;
+                            }
+                        }
                     }
-
-                    if (dataAccessory.Skip(k).Take(oldItemName.Count).SequenceEqual(oldItemName))
+                    if (!falsePositive)
                     {
-                        return itemID;
+                        if (dataAccessory.Skip(k).Take(oldItemName.Count).SequenceEqual(oldItemName))
+                        {
+                            return itemID;
+                        }
                     }
                 }
                 Trace.WriteLine("No matches in getting old Item ID - Used 0 as fallback");

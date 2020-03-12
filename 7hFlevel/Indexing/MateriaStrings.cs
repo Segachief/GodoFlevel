@@ -82,7 +82,7 @@ namespace _7hFlevel.Indexing
 
                 if(oldMateriaName[0] == 0x21 && oldMateriaName[1] == 0x4C && oldMateriaName[2] == 0x4C)
                 {
-                    //break
+                    //break for All string, testing
                 }
 
                 for (int i = 0; i < data.Length; i++)

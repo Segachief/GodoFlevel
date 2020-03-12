@@ -25,11 +25,6 @@ namespace _7hFlevel.FlevelRandomisation
                 // Breakpoint sink to analyse qd's allocation of items
             }
 
-            if (name == "mds7_w2")
-            {
-                // Breakpoint sink to analyse qd's allocation of items
-            }
-
             // Prevents an out of bounds exception and returns data unaltered
             if (textOffset >= data.Length)
             {
@@ -69,28 +64,59 @@ namespace _7hFlevel.FlevelRandomisation
                     }
                 }
             }
-            if(name == "bugin1b")
+
+            // Exceptions List
+            // A number of texts aren't uniformly formatted; some have extra spaces, some omit the Key Item part, etc.
+            // This removes them from the pool so that their strings aren't swapped.
+            if (name == "blin62_1")
+            {
+                // Removes Keycard 65 reference from the pool
+                usedTexts.Remove(19);
+            }
+            if (name == "bugin1b")
             {
                 // Master Magic/Command/Summon texts have false positives, prune them
                 usedTexts.Remove(14);
                 usedTexts.Remove(16);
                 usedTexts.Remove(17);
             }
-            if(name == "eals_1")
+            if (name == "eals_1")
             {
                 // Received texts on this field start with 2 spaces, throwing it off
+                // TODO: Add logic to handle this field
                 return data;
+            }
+            if (name == "mkt_w")
+            {
+                // Removes Batteries reference from the pool
+                usedTexts.Remove(13);
+            }
+            if (name == "zz1")
+            {
+                // Removes Mythril reference from pool
+                usedTexts.Remove(5);
             }
             if (name == "zz6")
             {
-                // Has no 'Materia!' at the end of its Materia string, gets flagged as an item instead
+                // Has no 'Materia!' at the end of its Materia string, gets flagged as an item instead.
+                // TODO: Add logic to handle this case.
+                return data;
+            }
+            if (name == "zz8")
+            {
+                // Name of Materia differs to Kernel-stored name (KOTR)
+                // TODO: Add logic to handle this case.
                 return data;
             }
 
+
             Random rnd = new Random();
             int r = 0; // Iterates new item string
-            //int c = 0; // Iterates data when searching for item opcodes
             string itemFileLocation = "";
+            //var itemNames = MateriaStrings.GetMateriaStrings(Directory.GetCurrentDirectory() + "\\Kernel Strings\\kernel.bin19");
+            //var weaponNames = MateriaStrings.GetMateriaStrings(Directory.GetCurrentDirectory() + "\\Kernel Strings\\kernel.bin20");
+            //var armourNames = MateriaStrings.GetMateriaStrings(Directory.GetCurrentDirectory() + "\\Kernel Strings\\kernel.bin21");
+            //var accessoryNames = MateriaStrings.GetMateriaStrings(Directory.GetCurrentDirectory() + "\\Kernel Strings\\kernel.bin22");
             var materiaNames = MateriaStrings.GetMateriaStrings(Directory.GetCurrentDirectory() + "\\Kernel Strings\\kernel.bin23");
 
             var terminator = new byte[1];
@@ -98,17 +124,18 @@ namespace _7hFlevel.FlevelRandomisation
             var currentString = new byte[10];
             var maxSearchRangeString = data.Length - 9;
 
-            //var searchFinalItem = new byte[] { 0x58, 0x00, 0x02 };
             var maxSearchRangeItem = data.Length - 5;
-            bool matchFound = false;
 
             var currentMateria = new byte[7];
             var currentItem = new byte[5];
+            var finalItem = new byte[3];
 
-            //byte[] oldName = 40];
             List<byte> oldName = new List<byte>();
             int oldMateriaID = 0;
             int oldItemID = 0;
+
+            // Searches for final items to update them back to 01 quantity
+            var searchFinalItem = new byte[] { 0x58, 0x00, 0xFE };
 
             // Searches for string 'Received "' for items
             var searchString = new byte[] { 0x32, 0x45, 0x43, 0x45, 0x49, 0x56, 0x45, 0x44, 0x00, 0x02 };
@@ -162,7 +189,7 @@ namespace _7hFlevel.FlevelRandomisation
                             newMateriaID == 67)
                         {
                             newMateriaID = rnd.Next(91);
-                            if(newMateriaID == 91)
+                            if (newMateriaID == 91)
                             {
                                 // break
                             }
@@ -172,7 +199,7 @@ namespace _7hFlevel.FlevelRandomisation
                         int countCharacters = offset + 10;
 
                         // Get old Materia name and match it to its ID; 0x02 is the terminator (")
-                        while(data[countCharacters] != 0x02)
+                        while (data[countCharacters] != 0x02)
                         {
                             oldName.Add(data[countCharacters]);
                             countCharacters++;
@@ -232,7 +259,6 @@ namespace _7hFlevel.FlevelRandomisation
             }
             offset = 0;
             r = 0;
-            //c = 0;
             textID = 0;
 
             // If item option is on
@@ -258,15 +284,21 @@ namespace _7hFlevel.FlevelRandomisation
                     offset = o + 1;
                 }
 
+                if(textID == 10)
+                {
+                    // break
+                }
+
                 // Match found for the string in this chunk
                 if (searchString.SequenceEqual(currentString))
                 {
                     if (usedTexts.Contains(textID))
                     {
-                        int newItemID = rnd.Next(256, 319); // Selects new Item ID
+                        // Rolls a new Item ID; will re-roll if it picks an empty item ID
+                        int newItemID = rnd.Next(0, 319);
                         while (newItemID > 104 && newItemID < 128)
                         {
-                            newItemID = rnd.Next(256, 319); // Selects new Item ID
+                            newItemID = rnd.Next(0, 319); // Selects new Item ID
                         }
 
                         if (newItemID < 128)
@@ -286,19 +318,19 @@ namespace _7hFlevel.FlevelRandomisation
                             itemFileLocation = Directory.GetCurrentDirectory() + "\\Kernel Strings\\kernel.bin22";
                         }
 
-                        // Skips past the Receieved " part of the string to the Materia Name
+                        // Skips past the Receieved " part of the string to the Item Name
                         int countItemCharacters = offset + 10;
 
-                        // Get old Materia name and match it to its ID; 0x02 is the terminator (")
+                        // Get old Item name and match it to its ID; 0x02 is the terminator (")
                         while (data[countItemCharacters] != 0x02)
                         {
                             oldName.Add(data[countItemCharacters]);
                             countItemCharacters++;
                         }
-                        // Currently, this is sending unmatching nonsense to the method. Check that the name is being retrieved correctly.
 
                         // Figure out the Item ID by matching the name in the kernel strings
                         oldItemID = ItemStrings.GetItemID(oldName);
+                        oldName.Clear();
 
                         var itemNames = ItemStrings.GetItemStrings(itemFileLocation, newItemID);
 
@@ -332,51 +364,40 @@ namespace _7hFlevel.FlevelRandomisation
                             currentItem[3] = data[c + 3];
                             currentItem[4] = data[c + 4];   // Always 0x01, but may be rare cases where it is higher number like Mt. Corel
 
-                            // MatchFound stops the process from continuing as this would hit the other item opcodes and incorrectly change them
-                            if (matchFound == false)
+                            // If a match is found, we can call a method to change the string
+                            if (searchItem.SequenceEqual(currentItem))
                             {
-                                // If a match is found, we can call a method to change the string
-                                if (searchItem.SequenceEqual(currentItem))
-                                {
-                                    // Convert item ID into a 2 byte endian value
-                                    ulong convertItemID = (ulong)newItemID;
-                                    byte[] convertedItemID = EndianMethods.GetLittleEndianConvert(convertItemID);
+                                // Convert item ID into a 2 byte endian value
+                                ulong convertItemID = (ulong)newItemID;
+                                byte[] convertedItemID = EndianMethods.GetLittleEndianConvert(convertItemID);
 
-                                    data[c] = 0x58; c++;
-                                    data[c] = 0x00; c++;
-                                    data[c] = convertedItemID[0]; c++; // Item ID 1st byte
-                                    data[c] = convertedItemID[1]; c++; // Item ID 2nd byte
-                                    data[c] = 0x01; c++; // Quantity here - Setting 02 prevents it from being changed again
-                                    matchFound = true;
-                                    Trace.WriteLine("An item ID was rewritten");
-                                }
+                                data[c] = 0x58;
+                                data[c + 1] = 0x00;
+                                data[c + 2] = convertedItemID[0]; // Item ID 1st byte
+                                data[c + 3] = convertedItemID[1]; // Item ID 2nd byte
+                                data[c + 4] = 0xFE; // Quantity
+                                Trace.WriteLine("An item ID was rewritten");
                             }
                         }
-                        //c = 0;
-                        matchFound = false;
                         usedTexts.Remove(textID);
                     }
                 }
             }
-            //c = 0;
-            //// Final Pass to revert items back to 01 quantity (or vary it)
-            //for (c = c; c < maxSearchRangeItem; c++)
-            //{
-            //    currentItem[0] = data[c];       // Always 0x58
-            //    currentItem[1] = data[c + 1];   // Always 0x00
-            //                                    // Two bytes are skipped as they can vary (Item ID)
-            //    currentItem[2] = data[c + 4];   // Always 0x01, but may be rare cases where it is higher number like Mt. Corel
 
-            //    // If a match is found, we can call a method to change the string
-            //    if (searchFinalItem.SequenceEqual(currentItem))
-            //    {
-            //        c++;
-            //        c++;
-            //        c++;
-            //        c++;
-            //        data[c] = 0x01; c++; // Can change this if user specified it
-            //    }
-            //}
+            // Final Pass to revert items back to 01 quantity (or vary it)
+            for (int f = 0; f < maxSearchRangeItem; f++)
+            {
+                finalItem[0] = data[f];       // Always 0x58
+                finalItem[1] = data[f + 1];   // Always 0x00
+                                                // Two bytes are skipped as they can vary (Item ID)
+                finalItem[2] = data[f + 4];   // Always 0x01, but may be rare cases where it is higher number like Mt. Corel
+
+                // If a match is found, we can call a method to change the string
+                if (searchFinalItem.SequenceEqual(finalItem))
+                {
+                    data[f + 4] = 0x01; // Can change this if user specified it
+                }
+            }
             return data;
         }
     }
