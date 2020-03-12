@@ -73,6 +73,11 @@ namespace _7hFlevel.FlevelRandomisation
                 // Removes Keycard 65 reference from the pool
                 usedTexts.Remove(19);
             }
+            if (name == "bonevil")
+            {
+                // Removes Mop reference from the pool, as this can have its string size exceeded by certain items
+                usedTexts.Remove(12);
+            }
             if (name == "bugin1b")
             {
                 // Master Magic/Command/Summon texts have false positives, prune them
@@ -85,6 +90,11 @@ namespace _7hFlevel.FlevelRandomisation
                 // Received texts on this field start with 2 spaces, throwing it off
                 // TODO: Add logic to handle this field
                 return data;
+            }
+            if (name == "games-2")
+            {
+                // Removes Ink reference from the pool, as this can have its string size exceeded by certain items
+                usedTexts.Remove(37);
             }
             if (name == "mkt_w")
             {
